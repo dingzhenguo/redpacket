@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youkeda.redpacket.dao.UserDAO">
+    <resultMap id="BaseResultMap" type="com.youkeda.redpacket.dataobject.UserDO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="gender" jdbcType="VARCHAR" property="gender"/>
+        <result column="gmt_created" jdbcType="TIMESTAMP" property="gmtCreated"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.youkeda.redpacket.dataobject.UserDO">
+    insert into user ( mobile, nickname,
+      avatar,password,gender, gmt_created, gmt_modified
+      )
+    values ( #{mobile,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
+      #{avatar,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{gender,jdbcType=VARCHAR},  now(), now()
+      )
+  </insert>
+
+    <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select id, mobile, nickname, avatar,password,gender, gmt_created, gmt_modified
+        from user
+        <where>
+            <if test="ids!=null and ids.size()>0">
+                id in
+                <foreach collection="ids" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

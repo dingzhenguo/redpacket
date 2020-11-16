@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youkeda.redpacket.dao.PreSingleRedEnvelopeDAO">
+    <resultMap id="BaseResultMap" type="com.youkeda.redpacket.dataobject.PreSingleRedEnvelopeDO">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="red_envelope_id" jdbcType="VARCHAR" property="redEnvelopeId"/>
+        <result column="red_envelope_amount" jdbcType="DOUBLE" property="redEnvelopeAmount"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="gmt_created" jdbcType="TIMESTAMP" property="gmtCreated"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from pre_single_red_envelope
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.youkeda.redpacket.dataobject.PreSingleRedEnvelopeDO">
+        insert into pre_single_red_envelope (id, red_envelope_id, red_envelope_amount,status,
+        note, gmt_created, gmt_modified
+        )
+        values (#{id,jdbcType=VARCHAR}, #{redEnvelopeId,jdbcType=VARCHAR}, #{redEnvelopeAmount,jdbcType=DOUBLE},#{status,jdbcType=VARCHAR},
+        #{note,jdbcType=VARCHAR}, now(), now()
+        )
+    </insert>
+    <insert id="batchAdd" parameterType="java.util.List">
+        insert into pre_single_red_envelope (id, red_envelope_id, red_envelope_amount,status,
+        note, gmt_created, gmt_modified
+        )
+        VALUES
+        <foreach collection="preSingleRedEnvelopeDOList" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=VARCHAR}, #{item.redEnvelopeId,jdbcType=VARCHAR},
+            #{item.redEnvelopeAmount,jdbcType=DOUBLE},#{item.status,jdbcType=VARCHAR},
+            #{item.note,jdbcType=VARCHAR}, now(), now()
+            )
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.youkeda.redpacket.dataobject.PreSingleRedEnvelopeDO">
+        update pre_single_red_envelope
+        set red_envelope_id = #{redEnvelopeId,jdbcType=VARCHAR},
+        red_envelope_amount = #{redEnvelopeAmount,jdbcType=DOUBLE},
+        status = #{status,jdbcType=VARCHAR},
+        note = #{note,jdbcType=VARCHAR},
+        gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select id, red_envelope_id, red_envelope_amount,status, note, gmt_created, gmt_modified
+        from pre_single_red_envelope
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="select" parameterType="com.youkeda.redpacket.params.PreSingleRedEnvelopeQueryParam"
+            resultMap="BaseResultMap">
+        select id, red_envelope_id, red_envelope_amount,status, note, gmt_created, gmt_modified
+        from pre_single_red_envelope
+        <where>
+            <if test="redEnvelopeId != null and redEnvelopeId!=''">
+                red_envelope_id = #{redEnvelopeId}
+            </if>
+            <if test="id != null and id!=''">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+</mapper>
